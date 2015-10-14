@@ -1735,7 +1735,13 @@ def hadoop_hdfs_rm():
 
 
 
+def initSomeVar():
+    RDS_ip = infos.RDS_ip
+    ECS_ip = infos.ECS_ip
 
+    import redis
+    cu_r = redis.Redis(host=ECS_ip, port=6379, db = 0)
+    cu_r.set(2001InplayMark,0)
 
 
 def redis_flushdb():
@@ -1765,6 +1771,8 @@ def runAll():
     redis_position_singlecallpmsort()
     hadoop_hdfs_rm()
     redis_order_ticket()
+
+    initSomeVar()
 
 
 def isatest():
