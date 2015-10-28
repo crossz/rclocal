@@ -18,18 +18,6 @@ v2.0 split tickets into rows, while not cols
 # %% system level subfunctions:
 import os, re, itertools, datetime
 
-if os.name == 'nt':
-    pass
-else:
-    import socket, fcntl, struct
-    def get_ip_address(ifname):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        return socket.inet_ntoa(fcntl.ioctl(
-            s.fileno(),
-            0x8915,  # SIOCGIFADDR
-            struct.pack('256s', ifname[:15])
-            )[20:24])
-
 
 class TheInfo():
 
@@ -37,23 +25,33 @@ class TheInfo():
         pass
 
     # ## tweak ip
+
     if os.name == 'nt':
         ip = '192.168.1.5'
     else:
-        ip = get_ip_address('eth0')
+        try:
+    	    import ConfigParser
+    	    conf=ConfigParser.ConfigParser()
+    	    conf.read('ops.conf')    
+    	    ipaddress = conf.get('ip','ipaddr')
+
+	    ip = ipaddress
+        except:
+            import socket, fcntl, struct
+            def get_ip_address(ifname,socket, fcntl, struct):
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                return socket.inet_ntoa(fcntl.ioctl(
+                    s.fileno(),
+                    0x8915,  # SIOCGIFADDR
+                    struct.pack('256s', ifname[:15])
+                    )[20:24])
+
+            ip = get_ip_address('eth0',socket, fcntl, struct)
+
 
     ECS_ip = ip
     RDS_ip = ip
 
-
-    """
-    import ConfigParser
-    conf=ConfigParser.ConfigParser()
-    conf.read('conf.ini')    
-    thisDate0 = conf.get('theinfo','thisDate')
-    #thisDate0 = "2015-01-02"
-    thisDate = thisDate0 + " 05:00:00"
-    """
 
     # ## sqlite: default configuration
     n_once = 10000  # 1w
@@ -109,9 +107,10 @@ class TheInfo():
     parser.add_option("-m", "--mn", dest="mnSplit", action="store_true", help="multiple and M*N spliting.")
     parser.add_option("-t", "--proc", dest="tk_proc", action="store_true", help="process N*1 tickets into N rows.")
 
-    parser.add_option("-i", "--importMathInfo", dest="importMathInfo", action="store_true", help="Import YTD excel files into Mysql match_info.")
-    parser.add_option("-o", "--importMathOdds", dest="importMathOdds", action="store_true", help="Import Odds excel files into Mysql match_odds.")
-    parser.add_option("-p", "--initMathProduct", dest="initMathProduct", action="store_true", help="Init Mysql match_product.")
+    parser.add_option("-i", "--importMatchInfo", dest="importMatchInfo", action="store_true", help="Import YTD excel files into Mysql match_info.")
+    parser.add_option("-o", "--importMatchOdds", dest="importMatchOdds", action="store_true", help="Import Odds excel files into Mysql match_odds.")
+    parser.add_option("-p", "--initMatchProduct", dest="initMatchProduct", action="store_true", help="Init Mysql match_product.")
+    parser.add_option('', "--redis_mi_SomeKeys", dest="redis_mi_SomeKeys", action="store_true", help="init redis some keys for match status.")
     parser.add_option('', "--redis_mo_current_price", dest="redis_mo_current_price", action="store_true", help="sync redis local odds from mysql match_odds.")
     parser.add_option('', "--redis_mo_position_limit", dest="redis_mo_position_limit", action="store_true", help="sync redis position_limit from mysql match_prodcut.")
     parser.add_option('', "--redis_mp_pool_state", dest="redis_mp_pool_state", action="store_true", help="sync redis pool_state from mysql match_prodcut.")
@@ -135,7 +134,34 @@ class TheInfo():
 
 
 def main():
-    global infos    # have to announce global here due to outter var could be re-assigned in this scope.
+    global infos,cu,cu_r    # have to announce global here due to outter var could be re-assigned in this scope.
+
+
+    # ## __init__
+    sqlitePath = infos.sqlitePath
+    db_diver = infos.db
+    RDS_ip = infos.RDS_ip
+    ECS_ip = infos.ECS_ip
+
+    # ====connect and reset db====
+    if db_diver == 'mysql':
+        import MySQLdb
+        conn = MySQLdb.connect(host=RDS_ip,user="caiex",passwd="12345678",db="caiex",charset="utf8") # ,conv=type_converters
+
+        #import pymysql
+        #conn=pymysql.connect(host=RDS_ip,user='caiex',passwd='12345678',db='caiex',port=3306,charset='utf8')
+    else:
+        import sqlite3
+        conn=sqlite3.connect(sqlitePath)
+
+    cu = conn.cursor()
+
+    import redis
+    cu_r = redis.Redis(host=ECS_ip, port=6379, db = 0)
+
+
+
+
 
 
 
@@ -145,11 +171,11 @@ def main():
     if opts.split: # -s
         tk_split()
 
-    if opts.importMathInfo: # -i
+    if opts.importMatchInfo: # -i
         ReadAndUpdate_match_info()
-    if opts.importMathOdds: # -o
+    if opts.importMatchOdds: # -o
         ReadAndUpdate_match_odds()
-    if opts.initMathProduct: # -p
+    if opts.initMatchProduct: # -p
         InitAndUpdate_match_product()
     if opts.redis_mo_current_price: # --
         redis_mo_current_price()
@@ -173,6 +199,9 @@ def main():
         hadoop_hdfs_rm()
     if opts.redis_order_ticket: # --
         redis_order_ticket()
+
+    if opts.redis_mi_SomeKeys: # --
+        redis_mi_SomeKeys()
 
     if opts.flushdb: # --
         redis_flushdb()
@@ -202,6 +231,12 @@ def main():
     if opts.tk_proc: # -str_test
         b=tk_proc(str_test)
         print(b)
+
+
+    # ## __clear__
+    cu.close()
+    conn.close()
+
 
 # %% sub-functions ====================
 def findnames(string):
@@ -1670,30 +1705,6 @@ def redis_order_ticket():
     redis
     '''
 
-    sqlitePath = infos.sqlitePath
-    db_diver = infos.db
-    RDS_ip = infos.RDS_ip
-    ECS_ip = infos.ECS_ip
-
-    st = infos.sport_type
-
-    # # ====connect and reset db====
-    # if db_diver == 'mysql':
-    #     import MySQLdb
-    #     conn = MySQLdb.connect(host=RDS_ip,user="caiex",passwd="12345678",db="caiex",charset="utf8") # ,conv=type_converters
-    #
-    #     #import pymysql
-    #     #conn=pymysql.connect(host=RDS_ip,user='caiex',passwd='12345678',db='caiex',port=3306,charset='utf8')
-    # else:
-    #     import sqlite3
-    #     conn=sqlite3.connect(sqlitePath)
-    #
-    # cu = conn.cursor()
-    #
-    # import redis
-    # cu_r = redis.Redis(host=ECS_ip, port=6379, db = 0)
-    cu = conn.cursor()
-
     #%% Mysql table reading
     cu.execute('select tid from order_ticket;')
     mysql_table = cu.fetchall()
@@ -1706,9 +1717,6 @@ def redis_order_ticket():
         print('Redis Key and Val: %s, %s' % (key, val))
         cu_r.set(key, val)
 
-    cu.close()
-    conn.close()
-
 def hadoop_hdfs_rm():
     '''
     to clean
@@ -1719,7 +1727,7 @@ def hadoop_hdfs_rm():
     from subprocess import Popen, PIPE
 
     # cmd = '/opt/hadoop-2.7.0/bin/hdfs dfs -ls /'
-    cmd = 'sudo /opt/hadoop-2.7.0/bin/hadoop fs -rm -r hdfs:///*'
+    cmd = 'sudo /opt/hadoop-2.7.0/bin/hdfs dfs -rm -r hdfs:///*'
 
     p_cmd = Popen(cmd.split(), stdin=PIPE, stdout=PIPE)
     p_cmd.communicate()
@@ -1735,13 +1743,29 @@ def hadoop_hdfs_rm():
 
 
 
-def initSomeVar():
-    RDS_ip = infos.RDS_ip
-    ECS_ip = infos.ECS_ip
+def redis_mi_SomeKeys():
+    '''
+    to sync
+    table: match_info.match_code
+    redis
+    '''
 
-    import redis
-    cu_r = redis.Redis(host=ECS_ip, port=6379, db = 0)
-    cu_r.set(2001InplayMark,0)
+    #%% mid(match_info中的主键)去关联 match_odds中的mid
+    cu.execute('select mi.match_code \
+                from match_info mi;')
+    mysql_table = cu.fetchall()
+
+    # import into redis
+    for rowi in mysql_table:
+        key1 = str(rowi[0]) + 'InplayMark'
+        val1 = 0
+        print('Redis Key and Val: %s, %s' % (key1, val1))
+        cu_r.set(key1, val1)
+
+        key2 = str(rowi[0]) + 'Statistics'
+        val2 = '0000-0000-0000-0000-0000-0000-0000'
+        print('Redis Key and Val: %s, %s' % (key2, val2))
+        cu_r.set(key2, val2)
 
 
 def redis_flushdb():
@@ -1755,7 +1779,7 @@ def redis_flushdb():
     ECS_ip = infos.ECS_ip
 
     import redis
-    cu_r = redis.Redis(host=ECS_ip, port=6379, db = 0)
+    cu_r = redis.Redis(host=ECS_ip, port=6379, db=0)
     cu_r.flushdb()
 
 
@@ -1769,37 +1793,38 @@ def runAll():
     redis_big_small_invest()
     redis_risk_limit_warning_percent()
     redis_position_singlecallpmsort()
-    hadoop_hdfs_rm()
+    redis_mi_SomeKeys()
     redis_order_ticket()
 
-    initSomeVar()
+    hadoop_hdfs_rm()
+
 
 
 def isatest():
-    print('hello world.')
+    print('ip: ' + infos.ip)
 
 ## ============================================
 if __name__ == "__main__":
     infos = TheInfo()
 
-    # ====connect and reset db====
-    sqlitePath = infos.sqlitePath
-    db_diver = infos.db
-    RDS_ip = infos.RDS_ip
-    ECS_ip = infos.ECS_ip
-
-    if db_diver == 'mysql':
-        import MySQLdb
-        conn = MySQLdb.connect(host=RDS_ip,user="caiex",passwd="12345678",db="caiex",charset="utf8") # ,conv=type_converters
-
-        #import pymysql
-        #conn=pymysql.connect(host=RDS_ip,user='caiex',passwd='12345678',db='caiex',port=3306,charset='utf8')
-    else:
-        import sqlite3
-        conn=sqlite3.connect(sqlitePath)
-
-    import redis
-    cu_r = redis.Redis(host=ECS_ip, port=6379, db = 0)
+    # # ====connect and reset db====
+    # sqlitePath = infos.sqlitePath
+    # db_diver = infos.db
+    # RDS_ip = infos.RDS_ip
+    # ECS_ip = infos.ECS_ip
+    #
+    # if db_diver == 'mysql':
+    #     import MySQLdb
+    #     conn = MySQLdb.connect(host=RDS_ip,user="caiex",passwd="12345678",db="caiex",charset="utf8") # ,conv=type_converters
+    #
+    #     #import pymysql
+    #     #conn=pymysql.connect(host=RDS_ip,user='caiex',passwd='12345678',db='caiex',port=3306,charset='utf8')
+    # else:
+    #     import sqlite3
+    #     conn=sqlite3.connect(sqlitePath)
+    #
+    # import redis
+    # cu_r = redis.Redis(host=ECS_ip, port=6379, db = 0)
 
 
     # pySqliteReCreate()
