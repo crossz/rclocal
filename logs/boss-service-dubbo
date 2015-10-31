@@ -1,0 +1,22 @@
+2015-10-30 09:15:51,386 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,560 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,763 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,763 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,808 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,808 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,808 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,808 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,808 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,808 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 WARN           JDBCExceptionReporter - SQL Error: 1205, SQLState: 41000
+2015-10-30 09:15:51,808 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
+2015-10-30 09:15:51,763 ERROR          JDBCExceptionReporter - Lock wait timeout exceeded; try restarting transaction
