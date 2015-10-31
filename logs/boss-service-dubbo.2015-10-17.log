@@ -1,2 +1,0 @@
-2015-10-17 00:12:44,746 WARN           JDBCExceptionReporter - SQL Error: 1062, SQLState: 23000
-2015-10-17 00:12:44,837 ERROR          JDBCExceptionReporter - Duplicate entry '210959' for key 'PRIMARY'
