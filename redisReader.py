@@ -9,6 +9,9 @@ import sys
 
 ip = '127.0.0.1'
 # ip = '192.168.1.4'
+ip = '1338600145584a6e.m.cnbja.kvstore.aliyuncs.com'
+r = redis.Redis(host=ip, port=6379, db=0, password='1338600145584a6e:1z34S678')
+  
 
 
 def read_args():
@@ -25,7 +28,6 @@ def readRedis_input():
     if args.upper() == 'EXIT' or args.upper() == 'QUIT':
         sys.exit()
     else:
-        r = redis.Redis(host=ip, port=6379, db=0)
         keys = r.keys(args)
         keys.sort()
         for k in keys:
@@ -40,7 +42,6 @@ def readRedis_del_keys():
     if args.upper() == 'EXIT' or args.upper() == 'QUIT':
         sys.exit()
     else:
-        r = redis.Redis(host=ip, port=6379, db=0)
         keys = r.keys(args)
         keys.sort()
         for k in keys:
