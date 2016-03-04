@@ -1,5 +1,5 @@
 #!/bin/sh
-#. /etc/profile
+#. /etc/profile.d/caiex.sh
 
 java -jar /opt/spider/spider-robot.jar >> /opt/logs/spider-robot.out
 #java -jar /opt/spider/spider-robot.jar 500 > /opt/logs/spider_robot_nohup_500.out 
