@@ -6,12 +6,20 @@ Created on 2015.5.5
 '''
 import redis
 import sys
+from redis.sentinel import Sentinel
 
-ip = '127.0.0.1'
-# ip = '192.168.1.4'
-ip = '1338600145584a6e.m.cnbja.kvstore.aliyuncs.com'
-r = redis.Redis(host=ip, port=6379, db=0, password='1338600145584a6e:1z34S678')
-  
+redis_ip = 'localhost'
+redis_port = 26679
+redis_pw = '1z34S678'
+
+#ip = '127.0.0.1'
+#ip = '192.168.1.4'
+#ip = '1338600145584a6e.m.cnbja.kvstore.aliyuncs.com'
+#r = redis.Redis(host=ip, port=6379, db=0, password='1338600145584a6e:1z34S678')
+sentinel = Sentinel([(redis_ip,redis_port)], socket_timeout=0.1) 
+redis_master = sentinel.discover_master('caiexmaster')
+print redis_master
+r = redis.Redis(host=redis_master[0], port=redis_master[1], db = 0, password=redis_pw)
 
 
 def read_args():
