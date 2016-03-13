@@ -1,0 +1,33 @@
+- hosts: test
+  remote_user: root
+  tasks:
+#  - name: cp JDK    到底放到哪儿是个问题
+#    shell: cp jdk-7u79-linux-x64.tar.gz
+  - name: cd opt  
+    shell: cd /opt/
+
+  - name: tar JDK
+    shell: chdir=/opt tar zxvf jdk-7u79-linux-x64.tar.gz 
+
+  - name: write profile
+    shell: echo -e "#JDK\nexport JAVA_HOME=/opt/jdk1.7.0_79\nexport JRE_HOME='${JAVA_HOME}'/jre\nexport CLASSPATH=.:'${JAVA_HOME}'/lib:${JRE_HOME}/lib\nexport PATH='${JAVA_HOME}'/bin:$PATH" >> /etc/profile
+
+  - name: source profile
+    shell: source /etc/profile
+
+  - name: update-alternative java
+    shell: update-alternatives --install /usr/bin/java java /opt/jdk1.7.0_79/bin/java 300
+
+  - name: update-alternative javac
+    shell: update-alternatives --install /usr/bin/javac javac /opt/jdk1.7.0_79/bin/javac 300
+
+  - name: update-alternative jps
+    shell: update-alternatives --install /usr/bin/jps jps /opt/jdk1.7.0_79/bin/jps 300
+
+  - name: source profile
+    shell: source /etc/profile
+#具体要多少个还得问一下
+
+#  - name: update-alternative config
+#    shell: update-alternatives --config java
+
