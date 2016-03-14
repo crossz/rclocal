@@ -1,5 +1,0 @@
-- hosts: test
-  remote_user: root
-  tasks:
-  - name: exec shell
-    shell: chdir=/opt sh 1.sh
