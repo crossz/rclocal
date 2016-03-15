@@ -13,6 +13,14 @@
     async: 15
     poll: 0 # 0 for aysnc, others for sync check per X seconds.
 
+
+# ansible cross -m setup >> /tmp/gather_facts
+  - debug: var=ansible_os_family
+
+  - debug: var={{ ansible_os_family }}
+
+  - debug: var=ansible_virbr0.ipv4.address
+
 #  - pause: prompt="pause here, ctrl+C to select options."
 
   - wait_for: path=/tmp/ans state=present
