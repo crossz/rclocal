@@ -1,7 +1,7 @@
 #!/bin/sh
 #. /etc/profile.d/caiex.sh
 
-java -jar /opt/spider/spider-robot.jar >> /opt/logs/spider-robot.out
+java -jar /opt/spider/spider-robot.jar >> /opt/logs/spider-robot_test.out
 #java -jar /opt/spider/spider-robot.jar 500 > /opt/logs/spider_robot_nohup_500.out 
 #java -jar /opt/spider/spider-robot.jar jbb > /opt/logs/spider_robot_nohup_jbb.out 
 #java -jar /opt/spider/spider-robot.jar lj > /opt/logs/spider_robot_nohup_lj.out
