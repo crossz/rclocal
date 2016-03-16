@@ -7,6 +7,8 @@
 #  gather_facts: false
 
   tasks:
+
+## ---- shell, async + poll ----
   - name: command 1
     shell: sleep 10
     register: result1
@@ -14,54 +16,46 @@
     poll: 0 # 0 for aysnc, others for sync check per X seconds.
 
 
-# ansible cross -m setup >> /tmp/gather_facts
+## ---- stat, when, wait_for, pause ----
+## files condition: when + stat
+  - name: check file exists or not for /tmp/ansible
+    stat: path=/tmp/ansible
+    register: sym
+
+## when condition
+  - debug: var=ansible_os_family
+    when: sym.stat.exists==true
+
+## wait_for
+  - wait_for: path=/tmp/ansible state=present
+
+## pause
+#  - pause: prompt="pause here, ctrl+C to select options."
+
+
+## ---- debug, gather_facts, setup ----
+## > ansible cross -m setup >> /tmp/gather_facts
+# when: true
+# when: ansible_os_family != 'Debian'
+# when: "'{{ ansible_os_family }}'!='Debian'"
+# when: "{{ ansible_os_family }}!='Debian'" # Debian!='Debian'
+
+## more debug and gather_facts
   - debug: var=ansible_os_family
 
   - debug: var={{ ansible_os_family }}
 
   - debug: var=ansible_virbr0.ipv4.address
 
-#  - pause: prompt="pause here, ctrl+C to select options."
-
-  - wait_for: path=/tmp/ans state=present
-
 #  - debug: msg="System has gateway {{ ansible_default_ipv4.gateway }}"
 #    when: ansible_default_ipv4.gateway is defined
 
+
+## ---- shell, register, debug, async test ----
   - name: command 2
-    shell: sleep 5 
-    register: result2 
+    shell: sleep 5
+    register: result2
 
 #  - debug: msg="debug {{ result2 }}"
   - debug: var=result2
 
-
-
-
-
-
-
-
-
-
-#  vars:
-#    hostcount: 5
-#  tasks:
-#    - name: Print interface
-#      debug: msg="{{ item }}/aa"
-#      with_items: "{{ ansible_interfaces }}"
-
-
-#  tasks:
-#  - name: echo command
-#    shell: echo cross - {{ ansible_default_ipv4.gateway }} >> /tmp/abc
-
-#  - debug: msg="System has gateway" "{{ ansible_default_ipv4.gateway }}"
-#    when: ansible_default_ipv4.gateway is defined
-
-#  tasks:
-#  - name: exec shell
-##    shell: chdir=/opt sh 1.sh
-#    shell: /usr/bin/uptime
-#    register: result 
-##    debug: msg="debug: {{ result }} "
