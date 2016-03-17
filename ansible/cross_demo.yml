@@ -1,6 +1,13 @@
 ---
 ## local mode:
-## ansible-playbook x.yml --connection=local
+## > ansible-playbook x.yml --connection=local
+
+## get gather_facts:
+## > ansible cross -m setup >> /tmp/gather_facts
+
+## modules in this demo: aysnc, poll; wait_for; register; debug; pause; local mode; gather ansible environments vars; stat; when;
+
+## -------------------------------------------------------
 
 - hosts: cross
   remote_user: root
@@ -34,7 +41,6 @@
 
 
 ## ---- debug, gather_facts, setup ----
-## > ansible cross -m setup >> /tmp/gather_facts
 # when: true
 # when: ansible_os_family != 'Debian'
 # when: "'{{ ansible_os_family }}'!='Debian'"
@@ -55,7 +61,13 @@
   - name: command 2
     shell: sleep 5
     register: result2
+    notify: command 3 in handler
 
 #  - debug: msg="debug {{ result2 }}"
   - debug: var=result2
+
+## ---- handler, (notify) ----
+  handlers:
+  - name: command 3 in handler
+    shell: sleep 7
 
