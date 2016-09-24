@@ -10,7 +10,9 @@ echo 'spider robot jbb restart'
 service spider-robot_lj restart
 echo 'spider robot lj restart'
 
-service spider-robot_lj restart
-echo 'spider robot clean restart'
-service spider-robot_lj restart
+service spider-robot_manual restart
 echo 'spider robot manual restart'
+
+####
+#service spider-robot_clean restart
+#echo 'spider robot clean restart'
