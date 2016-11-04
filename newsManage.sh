@@ -1,4 +1,4 @@
 #!/bin/sh
 . /etc/profile
-nohup java -jar /opt/apps/newsManage-1.0-SNAPSHOT.war --server.port=8814 
+exec java -jar /opt/apps/newsManage-1.0-SNAPSHOT.war --server.port=8814 >> /opt/logs/news/newsManage.out 2>&1  
 
