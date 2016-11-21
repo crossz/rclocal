@@ -1,0 +1,22 @@
+[Unit]
+Description=consumer
+After=network.target
+After=syslog.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=caiex
+Group=caiex
+
+
+# Start main service
+ExecStart=/opt/rclocal/consumer_upstart.sh
+
+
+# Give up if ping don't get an answer
+TimeoutSec=600
+
+Restart=always
+PrivateTmp=false

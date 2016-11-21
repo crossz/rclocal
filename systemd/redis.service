@@ -1,0 +1,23 @@
+[Unit]
+Description=redis
+After=network.target
+After=syslog.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+#User=redisU
+User=root
+Group=caiex
+Type=forking
+
+# Start main service
+ExecStart=/opt/rclocal/redis_start_sentinel.sh
+
+
+# Give up if ping don't get an answer
+TimeoutSec=600
+
+#Restart=always
+PrivateTmp=false
