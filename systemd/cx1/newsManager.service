@@ -1,0 +1,23 @@
+[Unit]
+Description=newsManager
+After=network.target
+After=syslog.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=root
+Group=root
+
+
+# Start main service
+ExecStart=/opt/rclocal/newsManage.sh
+
+
+# Give up if ping don't get an answer
+TimeoutSec=600
+
+Restart=always
+PrivateTmp=false
+

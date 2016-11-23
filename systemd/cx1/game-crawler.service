@@ -1,0 +1,24 @@
+[Unit]
+Description=game-crawler
+After=network.target
+After=syslog.target
+#Requires=dubbo.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=root
+Group=root
+
+
+# Start main service
+ExecStart=/opt/rclocal/game-crawler.sh
+
+
+# Give up if ping don't get an answer
+TimeoutSec=600
+
+Restart=always
+PrivateTmp=false
+
