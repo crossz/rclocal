@@ -5,3 +5,4 @@ cp /opt/logs/dubbo.out /opt/logs/dubbo.out.$(date +%Y%m%d) && cat /dev/null > /o
 cp /opt/logs/consumer.out /opt/logs/consumer.out.$(date +%Y%m%d) && cat /dev/null > /opt/logs/consumer.out
 cp /opt/logs/sbcconsumer.out /opt/logs/sbcconsumer.out.$(date +%Y%m%d) && cat /dev/null > /opt/logs/sbcconsumer.out
 cp /opt/logs/centralserver.out /opt/logs/centralserver.out.$(date +%Y%m%d) && cat /dev/null > /opt/logs/centralserver.out
+cp /opt/logs/spider-web.out /opt/logs/spider-web.out.$(date +%Y%m%d) && cat /dev/null > /opt/logs/spider-web.out
