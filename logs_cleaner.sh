@@ -11,8 +11,9 @@ delete_logs() {
 # log parts
 
 ## sbc and sbcconsumer
-delete_logs "$1" /opt/logs/sbcconsumer
 delete_logs "$1" /opt/logs/sbc
+delete_logs "$1" /opt/logs/sbcconsumer
+delete_logs "$1" /opt/logs/sbcconsumer2/sbcconsumer
 
 ### oltp and oltp-dubbo and oltp-consumer
 delete_logs "$1" /opt/logs/oltp-api
