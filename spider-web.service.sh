@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /opt/spider/spider-web.service.sh
+exec /opt/spider/start.sh
