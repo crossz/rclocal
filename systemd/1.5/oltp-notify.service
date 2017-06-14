@@ -1,0 +1,23 @@
+[Unit]
+Description=OLTP-API-NOTIFY-1007
+After=network.target
+After=syslog.target
+#Requires=sbcconsumer.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=root
+Group=caiex
+
+
+# Start main service
+ExecStart=/opt/rclocal/oltp-notify.service.sh
+
+
+# Give up if ping don't get an answer
+TimeoutSec=600
+
+Restart=always
+PrivateTmp=false
