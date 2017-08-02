@@ -1,0 +1,22 @@
+[Unit]
+Description=news-manager
+After=network.target
+After=syslog.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=root
+Group=caiex
+
+
+# Start main service
+ExecStart=/opt/rclocal/news-manager.service.sh
+
+
+# Give up if ping don't get an answer
+TimeoutSec=600
+
+Restart=always
+PrivateTmp=false

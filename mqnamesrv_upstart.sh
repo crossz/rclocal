@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -ex
 . /etc/profile
 
 ### global variables
