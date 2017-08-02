@@ -14,6 +14,7 @@ Group=caiex
 # Start main service
 ExecStart=/opt/rclocal/spider-robot_stats.service.sh
 
+
 # Give up if ping don't get an answer
 TimeoutSec=600
 

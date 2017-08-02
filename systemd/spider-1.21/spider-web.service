@@ -1,5 +1,5 @@
 [Unit]
-Description=spider-robot main
+Description=spider-web main
 
 [Install]
 WantedBy=multi-user.target
@@ -8,9 +8,12 @@ WantedBy=multi-user.target
 User=root
 Group=caiex
 #Type=forking
+RemainAfterExit=yes
+
 
 # Start main service
 ExecStart=/opt/rclocal/spider-web.service.sh
+ExecStop=/opt/spider/spider-web_stop.sh
 
 
 # Give up if ping don't get an answer

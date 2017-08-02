@@ -1,5 +1,5 @@
 [Unit]
-Description=spider-robot main
+Description=spider-robot live.500.com for manual
 After=network.target
 After=syslog.target
 
@@ -12,7 +12,7 @@ Group=caiex
 #Type=forking
 
 # Start main service
-ExecStart=/opt/rclocal/spider-robot_clean.service.sh
+ExecStart=/opt/rclocal/spider-500w-manual.service.sh
 
 
 # Give up if ping don't get an answer
