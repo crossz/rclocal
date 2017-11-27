@@ -1,18 +1,17 @@
 [Unit]
-Description=spider-robot main
-After=network.target
-After=syslog.target
+Description=central_server for hadoop python
 
 [Install]
 WantedBy=multi-user.target
 
 [Service]
-User=root
+User=caiex
 Group=caiex
 #Type=forking
 
 # Start main service
-ExecStart=/opt/rclocal/spider-robot_clean.service.sh
+ExecStart=/opt/rclocal/central_server_upstart.sh
+
 
 # Give up if ping don't get an answer
 TimeoutSec=600

@@ -1,7 +1,5 @@
 [Unit]
 Description=spider-robot main
-After=network.target
-After=syslog.target
 
 [Install]
 WantedBy=multi-user.target
@@ -12,7 +10,8 @@ Group=caiex
 #Type=forking
 
 # Start main service
-ExecStart=/opt/rclocal/spider-robot_clean.service.sh
+ExecStart=/opt/rclocal/spider-web.service.sh
+
 
 # Give up if ping don't get an answer
 TimeoutSec=600
