@@ -16,9 +16,9 @@ delete_logs "$1" /opt/logs/sbcconsumer
 delete_logs "$1" /opt/logs/sbcconsumer2/sbcconsumer
 
 ### oltp and oltp-dubbo and oltp-consumer
-delete_logs "$1" /opt/logs/oltp-api
-delete_logs "$1" /opt/logs/dubbo
-delete_logs "$1" /opt/logs/consumer
+delete_logs "$1" /opt/logs/oltpApi
+#delete_logs "$1" /opt/logs/dubbo
+#delete_logs "$1" /opt/logs/consumer
 
 ## docker parts
 docker rmi $(docker images -q -f dangling=true)
